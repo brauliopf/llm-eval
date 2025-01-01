@@ -12,9 +12,7 @@ export const Models = pgTable("models", {
   provider: text("provider"),
   fineTuning: text("fineTuning"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt")
-    .notNull()
-    .$onUpdate(() => new Date()),
+  updatedAt: timestamp("updatedAt").$onUpdate(() => new Date()),
 });
 
 export const Experiments = pgTable("experiments", {
