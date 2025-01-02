@@ -27,9 +27,9 @@ const groq = new Groq();
 //   const prompt = formData.get("prompt")?.toString() || "Just say you love me"
 // }
 
-export const getGroqChatCompletion = async (formData: FormData) => {
-  const prompt = formData.get("prompt")?.toString() || "";
-
+export const getGroqChatCompletion = async (
+  prompt: string
+): Promise<string> => {
   const response = await groq.chat.completions.create({
     messages: [
       // Set an optional system message. This sets the behavior of the
@@ -50,5 +50,5 @@ export const getGroqChatCompletion = async (formData: FormData) => {
     model: "llama-3.3-70b-versatile",
   });
 
-  return response.choices[0].message.content;
+  return response.choices[0]?.message?.content || "";
 };
