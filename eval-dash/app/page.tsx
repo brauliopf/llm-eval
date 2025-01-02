@@ -9,6 +9,11 @@ export default function Page() {
   const [newModel, setNewModel] = useState("");
   const [models, setModels] = useState<UIModel[]>([{ model_ref: "llama 3.1" }]);
 
+  const getChatCompletion = (model_ref: string, userPrompt: string) => {
+    // AXIOS API REQUEST
+    return "TBD";
+  };
+
   const ModelPanel = ({
     index,
     length,
@@ -62,7 +67,7 @@ export default function Page() {
       const predictions = await Promise.all(
         models.map(async (model) => ({
           ...model,
-          prediction: await getGroqChatCompletion(userPrompt),
+          prediction: await getChatCompletion(model.model_ref, userPrompt),
         }))
       );
       setModels(predictions);
