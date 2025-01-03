@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 import openai
 from groq import Groq
-from .models import LLMProvider, CompletionRequest
+from .util import LLMProvider, CompletionRequest, Prompt
 
 class LLMClientManager:
     def __init__(self):
@@ -13,11 +13,6 @@ class LLMClientManager:
             LLMProvider.DEEPSEEK: ["deepseek-chat"],
             LLMProvider.GROQ: ["llama3-70b-8192", "mixtral-8x7b"]
             }
-
-    class Prompt(BaseModel):
-        provider: LLMProvider
-        content: str
-        model: str
 
     def initialize_client(self, provider: LLMProvider, **credentials):
             """Initialize a client for the specified provider with given credentials."""
@@ -66,7 +61,10 @@ class LLMClientManager:
         }
     
     async def generate_completion(self, request: CompletionRequest) -> Dict[str, Any]:
-        """Generate completion using the specified provider and model."""
+        """ Generate completion using the specified provider and model.
+            Params:
+                - request: provider*, model*, prompt*
+        """
         client = self._clients.get(request.provider)
         if not client:
             raise HTTPException(
@@ -89,4 +87,7 @@ class LLMClientManager:
             raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
     
     def get_models(self) -> list[str]:
+        '''
+        Returns a dictionary with {provider:model_ref}
+        '''
         return self._supported_models

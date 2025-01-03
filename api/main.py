@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from typing import Dict, Any
 from llm.manager import LLMClientManager
-from llm.models import CompletionRequest, LLMProvider
+from api.llm.util import CompletionRequest, LLMProvider
 import os
 from dotenv import load_dotenv
 import uvicorn
@@ -11,7 +11,7 @@ load_dotenv()
 
 llm_manager = LLMClientManager()
 
-# use fastapi lifespan events to setup the clients before application execution
+# Instantiate LLM clients on app startup -> use fastapi lifespan events
 # https://fastapi.tiangolo.com/advanced/events/#use-case
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,17 +34,13 @@ async def lifespan(app: FastAPI):
         print(f"Error initializing LLM clients: {e}")
         raise
     
-    yield  # Server is running and handling requests here
+    yield
 
-    # Cleanup: close any connections or free resources
     try:
-        # Add any cleanup code here if needed
-        # For example, closing connections or cleaning up resources
         print("Cleaning up resources...")
     except Exception as e:
         print(f"Error during cleanup: {e}")
 
-# Pass the lifespan to FastAPI
 app = FastAPI(lifespan=lifespan)
 
 @app.post("/completion")
