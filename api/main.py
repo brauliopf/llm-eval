@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from typing import Dict, Any
-from .llm.manager import LLMClientManager
-from .llm.util import CompletionRequest, LLMProvider
+from llm.manager import LLMClientManager
+from llm.util import CompletionRequest, LLMProvider
 import os
 from dotenv import load_dotenv
 import uvicorn
